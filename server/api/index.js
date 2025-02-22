@@ -4,12 +4,17 @@ const cors = require("cors");
 const app = express();
 // files
 const connectDB = require("../src/db/connect.db");
+const { UserRouter } = require("../src/routes/user.routes");
+const { VideoRouter } = require("../src/routes/video.routes");
 // config
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 
 // middlewares
+const api_version = "/api/v1";
+app.use(`${api_version}/user`, UserRouter);
+app.use(`${api_version}/video`, VideoRouter);
 
 // server start
 const PORT = process.env.PORT;
