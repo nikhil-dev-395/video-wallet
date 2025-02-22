@@ -8,6 +8,9 @@ const connectDB = require("../src/db/connect.db");
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
+
+// middlewares
+
 // server start
 const PORT = process.env.PORT;
 (async () => {
@@ -20,3 +23,8 @@ const PORT = process.env.PORT;
     console.log("error occurred at server" + error);
   }
 })();
+
+/*
+ we are exporting this because of our vercel config , its just for deployment nothing
+special */
+module.exports = app;
