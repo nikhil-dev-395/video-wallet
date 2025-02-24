@@ -1,6 +1,6 @@
 const router = require("express").Router();
 const Video = require("../models/video.models");
-
+const User = require("../models/user.models.js");
 router.post("/create", async (req, res) => {
   try {
     const createVideo = await Video.create({
@@ -43,6 +43,62 @@ router.get("/show-all-video", async (req, res) => {
     console.log(error);
     return res.status(500).json({
       success: false,
+      error: error.message,
+    });
+  }
+});
+
+router.post("/buy-video", async (req, res) => {
+  try {
+    const { videoId } = req.body;
+    if (!videoId) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Video ID is required" });
+    }
+
+    const videoToBuy = await Video.findById(videoId);
+    if (!videoToBuy) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Video not found" });
+    }
+
+    const existUser = await User.findOne();
+    if (!existUser) {
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found" });
+    }
+
+    if (existUser.walletBalance < videoToBuy.price) {
+      return res
+        .status(400)
+        .json({ success: false, message: "User doesn't have enough balance" });
+    }
+
+    // Deduct the price from the wallet balance
+    existUser.walletBalance -= videoToBuy.price;
+    // Update the video document: push user ID to purchasedBy array
+    const userId = existUser._id;
+    if (!videoToBuy.purchasedBy.includes(userId)) {
+      videoToBuy.purchasedBy.push(userId);
+      await videoToBuy.save();
+    }
+
+    existUser.purchasedVideos.push(videoId);
+    await existUser.save();
+
+    return res.status(200).json({
+      success: true,
+      message: "Video purchased successfully",
+      purchasedBy: videoToBuy.purchasedBy,
+    });
+  } catch (error) {
+    console.error("Error at buying video:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Error at buying video",
       error: error.message,
     });
   }

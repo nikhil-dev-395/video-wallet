@@ -1,14 +1,51 @@
+import { SERVER_DOMAIN_URL } from "@/constants/constants";
+import RazorpayCheckout from "react-native-razorpay";
+import { WebView } from "react-native-webview";
+import PaymentButton from "../../components/PaymentButton.jsx";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { StyleSheet, Image, Platform, Text, View } from "react-native";
+import {
+  StyleSheet,
+  Image,
+  Platform,
+  Text,
+  View,
+  Alert,
+  Button,
+  TouchableHighlight,
+  Linking,
+  Modal,
+} from "react-native";
 
 export default function TabTwoScreen() {
   const [user, setUser] = useState(null);
+  const [paymentUrl, setPaymentUrl] = useState(null);
+  const [loading, setLoading] = useState(false);
+
+  const handlePayment = async () => {
+    try {
+      const { data } = await axios.post(
+        `${SERVER_DOMAIN_URL}/api/v1/payment/checkout`,
+        {
+          amount: 100, // ₹10
+          currency: "INR",
+        }
+      );
+
+      if (data.success) {
+        setPaymentUrl(data.paymentUrl);
+      } else {
+        Alert.alert("Payment Error", "Failed to create payment link");
+      }
+    } catch (error) {
+      Alert.alert("Error", error.message);
+    }
+  };
 
   useEffect(() => {
     async function fetUserInfo() {
       const { data } = await axios.get(
-        "http://10.0.2.2:4963/api/v1/user/user-info"
+        `${SERVER_DOMAIN_URL}/api/v1/user/user-info`
       );
 
       if (data.success) {
@@ -31,8 +68,35 @@ export default function TabTwoScreen() {
       <View style={styles.profile}>
         <Text style={styles.walletProfileOWner}>owner</Text>
         <Text style={styles.walletTitle}>{user?.email} </Text>
-        <Text style={styles.walletTitle}>{user?.username}</Text>
+        <Text style={styles.walletUsername}>{user?.username}</Text>
       </View>
+
+      <View style={styles.profile}>
+        <Text style={styles.walletProfileOWner}>pay</Text>
+        <Text style={styles.walletTitle}>10 rs </Text>
+        <Button onPress={handlePayment} title="pay now" />
+
+        {/* <PaymentButton amount={200} /> */}
+      </View>
+
+      {loading && <ActivityIndicator size="large" color="#42c" />}
+
+      {paymentUrl && (
+        <Modal visible={true} animationType="slide">
+          <WebView
+            source={{ uri: paymentUrl }}
+            onNavigationStateChange={(navState) => {
+              if (navState.url.includes("success")) {
+                Alert.alert("Payment Successful!");
+                setPaymentUrl(null);
+              } else if (navState.url.includes("failure")) {
+                Alert.alert("Payment Failed!");
+                setPaymentUrl(null);
+              }
+            }}
+          />
+        </Modal>
+      )}
     </View>
   );
 }

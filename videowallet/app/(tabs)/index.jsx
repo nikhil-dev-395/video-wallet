@@ -10,7 +10,7 @@ import {
 import Card from "../../components/card.jsx";
 import axios from "axios";
 import RazorpayCheckout from "react-native-razorpay";
-
+import { SERVER_DOMAIN_URL } from "../../constants/constants.js";
 export default function HomeScreen() {
   const [videos, setVideos] = useState([]);
   // Fetch videos when the component mounts
@@ -18,7 +18,7 @@ export default function HomeScreen() {
     const fetchVideos = async () => {
       try {
         const { data } = await axios.get(
-          "http://10.0.2.2:4963/api/v1/video/show-all-video"
+          ` ${SERVER_DOMAIN_URL}/api/v1/video/show-all-video`
         );
         if (data.success) {
           setVideos(data.allVideo);
@@ -34,96 +34,33 @@ export default function HomeScreen() {
     fetchVideos();
   }, []);
 
+
   const checkoutHandler = async (amount) => {
     try {
-      // Fetch the Razorpay API key
-      const {
-        data: { key },
-      } = await axios.get("http://10.0.2.2:4963/api/v1/getApiKey");
-
-      // Create a payment order
-      const {
-        data: { order },
-      } = await axios.post("http://10.0.2.2:4963/api/v1/payment/checkout", {
-        amount,
-      });
-
-      // Razorpay payment options
-      const options = {
-        key, // Use the fetched API key
-        amount: order.amount, // Use the amount from the created order
-        currency: "INR",
-        name: "Nikhil Wankhade",
-        description: "Test Transaction",
-        image: "https://example.com/your_logo",
-        order_id: order.id, // Use the order ID from the created order
-        callback_url: "http://10.0.2.2:4963/api/v1/payment/paymentVerification",
-        prefill: {
-          name: "Gaurav Kumar",
-          email: "gaurav.kumar@example.com",
-          contact: "9000090000",
-        },
-        notes: {
-          address: "Razorpay Corporate Office",
-        },
-        theme: {
-          color: "#42c",
-        },
-      };
-
-      // Open Razorpay checkout
-      RazorpayCheckout.open(options)
-        .then((data) => {
-          // Handle success
-          Alert.alert(`Success: ${data.razorpay_payment_id}`);
-        })
-        .catch((error) => {
-          // Handle failure
-          Alert.alert(`Error: ${error.code} | ${error.description}`);
-        });
+      // handle if user have money in wallet means it has wallet balance
     } catch (error) {
-      console.error(
-        "Error processing payment:",
-        error.response?.data || error.message
-      );
-      Alert.alert(
-        "Payment Error",
-        "An error occurred while processing the payment."
-      );
+      console.log(error);
     }
   };
-
   return (
     <ScrollView>
       <View style={styles.container}>
-        <Card
-          amount={4000}
-          img={
-            "https://images.unsplash.com/photo-1726137570037-6e291746fb5e?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxmZWF0dXJlZC1waG90b3MtZmVlZHwxfHx8ZW58MHx8fHx8"
-          }
-          checkoutHandler={() => checkoutHandler(4000)}
-        />
-
         {videos.map((video, index) => (
           <Card
             key={index}
-            amount={parseInt(video.price) * 1000}
+            videoId={video._id}
+            amount={parseInt(video.price)}
+            purchasedBy={video.purchasedBy.length > 0}
             img={
-              "https://images.unsplash.com/photo-1726137570037-6e291746fb5e?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxmZWF0dXJlZC1waG90b3MtZmVlZHwxfHx8ZW58MHx8fHx8"
+              "https://images.pexels.com/photos/320617/pexels-photo-320617.jpeg?auto=compress&cs=tinysrgb&w=600"
             }
-            checkoutHandler={() =>
-              checkoutHandler(parseInt(video.price) * 1000)
+            video={
+              "https://res.cloudinary.com/dbenalctk/video/upload/v1740225099/video2_davdwy.mp4"
             }
+            checkoutHandler={() => checkoutHandler(parseInt(video.price) * 10)}
           />
         ))}
 
-        <TouchableHighlight
-          onPress={() => Alert.alert("hii")}
-          underlayColor="#b3e6ff"
-          style={styles.button}
-        >
-          <Text>make recharge </Text>
-        </TouchableHighlight>
       </View>
     </ScrollView>
   );

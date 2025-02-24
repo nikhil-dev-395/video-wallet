@@ -1,14 +1,15 @@
-import { Link, Text } from "expo-router";
-import { StyleSheet } from "react-native";
+// import { useRouter } from "expo-router";
+import { Text, StyleSheet, View, Pressable } from "react-native";
 
 export default function NotFoundScreen() {
+  // const router = useRouter();
   return (
-    <>
-      <Text styles={styles.container}>oops page not found</Text>
-      <Link href={"/"} styles={styles.link}>
-        Home page
-      </Link>
-    </>
+    <View style={styles.container}>
+      <Text style={styles.text}>Oops! Page not found</Text>
+      {/* <Pressable onPress={() => router.push("/(tabs)/Home")}>
+        <Text>Home Page</Text>
+      </Pressable> */}
+    </View>
   );
 }
 
@@ -19,8 +20,13 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     padding: 20,
   },
+  text: {
+    fontSize: 18,
+    fontWeight: "bold",
+  },
   link: {
     marginTop: 15,
     paddingVertical: 15,
+    color: "blue",
   },
 });

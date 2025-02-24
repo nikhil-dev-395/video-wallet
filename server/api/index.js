@@ -9,7 +9,7 @@ const { UserRouter } = require("../src/routes/user.routes");
 const { VideoRouter } = require("../src/routes/video.routes");
 const { paymentRouter } = require("../src/routes/payment.routes");
 // config
-app.use(cors("*"));
+app.use(cors({ origin: "*", credentials: true }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
