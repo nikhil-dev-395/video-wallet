@@ -20,13 +20,12 @@ app.use(`${api_version}/video`, VideoRouter);
 app.use(`${api_version}/payment`, paymentRouter);
 
 // sending a api key to frontend
-
 app.get(`${api_version}/getApiKey`, async (req, res) => {
   return res.status(200).json({ key: process.env.RAZORPAY_API_KEY });
 });
 
 // server start
-const PORT = process.env.PORT;
+const PORT = process.env.PORT || 4963;
 (async () => {
   try {
     await connectDB();
