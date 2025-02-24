@@ -13,6 +13,9 @@
       "bundleIdentifier": "com.nikhilwankhade395.videowallet",
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false
+      },
+      "runtimeVersion": {
+        "policy": "appVersion"
       }
     },
     "android": {
@@ -20,7 +23,8 @@
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.nikhilwankhade395.videowallet"
+      "package": "com.nikhilwankhade395.videowallet",
+      "runtimeVersion": "1.0.0"
     },
     "web": {
       "bundler": "metro",
@@ -49,6 +53,9 @@
       "eas": {
         "projectId": "037c4ca8-b66e-40d0-a19a-c2af75fdfef9"
       }
+    },
+    "updates": {
+      "url": "https://u.expo.dev/037c4ca8-b66e-40d0-a19a-c2af75fdfef9"
     }
   }
 }

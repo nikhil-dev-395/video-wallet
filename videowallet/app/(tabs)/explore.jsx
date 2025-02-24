@@ -1,5 +1,5 @@
 import { SERVER_DOMAIN_URL } from "@/constants/constants";
-import RazorpayCheckout from "react-native-razorpay";
+// import RazorpayCheckout from "react-native-razorpay";
 import { WebView } from "react-native-webview";
 import PaymentButton from "../../components/PaymentButton.jsx";
 import axios from "axios";
@@ -87,7 +87,7 @@ export default function TabTwoScreen() {
             source={{ uri: paymentUrl }}
             onNavigationStateChange={(navState) => {
               if (navState.url.includes("success")) {
-                Alert.alert("Payment Successful!");
+                Alert.alert(" Recharge Payment Successful!");
                 setPaymentUrl(null);
               } else if (navState.url.includes("failure")) {
                 Alert.alert("Payment Failed!");

@@ -9,7 +9,7 @@ import {
 } from "react-native";
 import Card from "../../components/card.jsx";
 import axios from "axios";
-import RazorpayCheckout from "react-native-razorpay";
+// import RazorpayCheckout from "react-native-razorpay";
 import { SERVER_DOMAIN_URL } from "../../constants/constants.js";
 export default function HomeScreen() {
   const [videos, setVideos] = useState([]);
