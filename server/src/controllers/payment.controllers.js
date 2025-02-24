@@ -10,7 +10,7 @@ const checkout = async (req, res) => {
       description: "Test Payment",
       // remember to handle this callback because we need to make redirect when user payment is successful but in
       // production - we need to handle this url 💪🏼
-      callback_url: "http://192.168.28.68:4963/api/v1/payment/verify",
+      callback_url: `${process.env.SERVER_DOMAIN_URL}/api/v1/payment/verify`,
       callback_method: "get",
     });
 
@@ -48,7 +48,7 @@ const paymentVerification = async (req, res) => {
       }
 
       // Increase wallet balance and save
-      const amountInINR = paymentDetails.amount / 10;
+      const amountInINR = paymentDetails.amount / 100;
       existUser.walletBalance += amountInINR;
       await existUser.save();
       // Redirect the user to success page

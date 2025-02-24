@@ -34,7 +34,6 @@ export default function HomeScreen() {
     fetchVideos();
   }, []);
 
-
   const checkoutHandler = async (amount) => {
     try {
       // handle if user have money in wallet means it has wallet balance
@@ -60,7 +59,6 @@ export default function HomeScreen() {
             checkoutHandler={() => checkoutHandler(parseInt(video.price) * 10)}
           />
         ))}
-
       </View>
     </ScrollView>
   );
